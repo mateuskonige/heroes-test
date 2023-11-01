@@ -1,95 +1,64 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
 
-export default function Home() {
+import { Grid, TextField } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import useStore from '../../store';
+import HeroCard from '../../src/app/_components/HeroCard';
+import WinnerModal from '../../src/app/_components/WinnerModal';
+
+const Home = () => {
+  const { setModal, search, setSearch, filteredData, fetchData, selectedHeros } = useStore();
+  const [winner, setWinner] = useState('');
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedHeros.length == 2) {
+      setModal(true)
+      const hero1 = selectedHeros[0].powerstats;
+      const hero2 = selectedHeros[1].powerstats;
+
+      const hero1Total = Object.values(hero1).reduce((a, b) => a + b);
+      const hero2Total = Object.values(hero2).reduce((a, b) => a + b);
+
+      if (hero1Total > hero2Total) {
+        setWinner(selectedHeros[0].name)
+      }
+      else if (hero1Total < hero2Total) {
+        setWinner(selectedHeros[1].name)
+      }
+      else {
+        setWinner('Draw')
+      }
+    }
+  }, [selectedHeros]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <>
+      <h1 className='text-center text-white text-5xl font-bold py-4'>Heroes Challenge</h1>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <TextField
+        type="search"
+        color="success"
+        variant="filled"
+        label="Search..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+      <Grid container spacing={2}>
+        {filteredData().map((item) => (
+          <Grid item xs={3} md={2}>
+            <HeroCard item={item} />
+          </Grid>
+        ))}
+      </Grid>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      <WinnerModal winner={winner} />
+    </ >
+  );
+};
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+export default Home;
