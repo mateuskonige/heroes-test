@@ -1,13 +1,14 @@
 "use client"
 
-import { Grid, TextField } from '@mui/material';
+import { Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import useStore from '../../store';
 import HeroCard from '../../src/app/_components/HeroCard';
 import WinnerModal from '../../src/app/_components/WinnerModal';
+import Search from './_components/Search';
 
 const Home = () => {
-  const { setModal, search, setSearch, filteredData, fetchData, selectedHeros } = useStore();
+  const { setModal, filteredData, fetchData, selectedHeros } = useStore();
   const [winner, setWinner] = useState('');
 
   useEffect(() => {
@@ -39,15 +40,7 @@ const Home = () => {
     <>
       <h1 className='text-center text-white text-5xl font-bold py-4'>Heroes Challenge</h1>
 
-      <TextField
-        type="search"
-        color="success"
-        variant="filled"
-        label="Search for a specific hero here!"
-        value={search}
-        className='w-full mb-4'
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      <Search />
 
       <Grid container spacing={2}>
         {filteredData().map((item) => (
