@@ -43,8 +43,9 @@ const Home = () => {
         type="search"
         color="success"
         variant="filled"
-        label="Search..."
+        label="Search for a specific hero here!"
         value={search}
+        className='w-full mb-4'
         onChange={(e) => setSearch(e.target.value)}
       />
 
